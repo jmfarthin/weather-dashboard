@@ -1,6 +1,6 @@
 
 var searchForm = document.querySelector('#search-form');
-
+// var searchInput = document.querySelector("#city-search").value.trim();
 
 async function getLatLon(event) {
     event.preventDefault();
@@ -29,9 +29,14 @@ async function getLatLon(event) {
 searchForm.addEventListener('submit', getLatLon);
 
 async function getWeatherData(lat, lon) {
-    var requestUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=imperial&exclude=minutely,hourly&appid=27d8cd69bb1174f9c5753f20a7b825cb`
+    var requestUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=imperial&exclude=current,minutely,hourly,alerts&appid=27d8cd69bb1174f9c5753f20a7b825cb`
     let apiData = await fetch(requestUrl);
     let weatherData = await apiData.json();
-    // console.log(weatherData);
-    console.log(weatherData.current.weather[0].icon);
+    console.log(weatherData);
+    // console.log(weatherData.current.weather[0].icon);
+    var unixDate = weatherData.daily[1].dt;
+    console.log(unixDate);
+
+    var date = dayjs.unix(unixDate).format("M-D-YYYY");
+    console.log(date);
 };
