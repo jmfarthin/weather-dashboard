@@ -1,6 +1,7 @@
 
 var searchForm = document.querySelector('#search-form');
-// var searchInput = document.querySelector("#city-search").value.trim();
+var apiKey = "27d8cd69bb1174f9c5753f20a7b825cb"
+var newCityData = {};
 
 async function getLatLon(event) {
     event.preventDefault();
@@ -13,7 +14,7 @@ async function getLatLon(event) {
     }
     console.log(searchInput);
 
-    var requestUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${searchInput},US&limit=1&appid=27d8cd69bb1174f9c5753f20a7b825cb`;
+    var requestUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${searchInput},US&limit=1&appid=${apiKey}`;
     let repoData = await fetch(requestUrl);
     let data = await repoData.json();
     // console.log(data);
@@ -23,20 +24,52 @@ async function getLatLon(event) {
     console.log(latData, lonData);
 
     // createCityButton(searchInput);
-    getWeatherData(latData, lonData);
+    getWeatherData(latData, lonData, searchInput);
 };
 
 searchForm.addEventListener('submit', getLatLon);
 
-async function getWeatherData(lat, lon) {
+async function getWeatherData(lat, lon, city) {
     var requestUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=imperial&exclude=current,minutely,hourly,alerts&appid=27d8cd69bb1174f9c5753f20a7b825cb`
     let apiData = await fetch(requestUrl);
     let weatherData = await apiData.json();
-    console.log(weatherData);
-    // console.log(weatherData.current.weather[0].icon);
-    var unixDate = weatherData.daily[1].dt;
-    console.log(unixDate);
+    
+    // var cityNameRequestUrl = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKey}`;
+    // let apiCityData = await fetch(cityNameRequestUrl);
+    // let cityNameData = await apiCityData.json();
 
-    var date = dayjs.unix(unixDate).format("M-D-YYYY");
-    console.log(date);
+    var cityName = city
+    console.log(weatherData);
+    console.log(cityName);
+
+    // console.log(weatherData.current.weather[0].icon);
+    // var unixDate = weatherData.daily[1].dt;
+    // var date = dayjs.unix(unixDate).format("M-D-YYYY");
+
+    setCityData(weatherData, cityName);
 };
+
+function setCityData(data, city){
+    var newCity = city;
+    // var currentStorage = JSON.parse(localStorage.getItem(newCity));
+    newCityData = {
+        name: newCity,
+        weather: []
+    }
+    // console.log(newCityData);
+    
+    for (i=0; i < 6; i++) {
+        var dailyData = {
+            date: dayjs.unix(data.daily[i].dt).format("M-D-YYYY"),
+            temp: data.daily[i].temp.day,
+            
+        };
+        newCityData.weather.push(dailyData);
+    };
+    
+    console.log(newCityData);
+
+    
+
+
+}
