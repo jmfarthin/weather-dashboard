@@ -26,7 +26,7 @@ async function getLatLon(event) {
 
     getWeatherData(latData, lonData, searchInput);
 
-    
+
 };
 
 searchForm.addEventListener('submit', getLatLon);
@@ -35,7 +35,7 @@ async function getWeatherData(lat, lon, city) {
     var requestUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=imperial&exclude=current,minutely,hourly,alerts&appid=27d8cd69bb1174f9c5753f20a7b825cb`
     let apiData = await fetch(requestUrl);
     let weatherData = await apiData.json();
-    
+
     // var cityNameRequestUrl = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKey}`;
     // let apiCityData = await fetch(cityNameRequestUrl);
     // let cityNameData = await apiCityData.json();
@@ -51,7 +51,7 @@ async function getWeatherData(lat, lon, city) {
     setCityData(weatherData, cityName);
 };
 
-function setCityData(data, city){
+function setCityData(data, city) {
     var newCity = city;
     var currentStorage = JSON.parse(localStorage.getItem(newCity));
     if (currentStorage === null) {
@@ -59,21 +59,23 @@ function setCityData(data, city){
             name: newCity,
             weather: []
         }
-        for (i=0; i < 6; i++) {
+        for (i = 0; i < 6; i++) {
             var dailyData = {
                 date: dayjs.unix(data.daily[i].dt).format("M-D-YYYY"),
                 temp: data.daily[i].temp.day,
-
+                wind: data.daily[i].wind_speed,
+                humidity: data.daily[i].humidity,
+                icon: data.daily[i].weather[0].icon,
             };
             cityForecastData.weather.push(dailyData);
         };
         localStorage.setItem(city, JSON.stringify([cityForecastData]));
         console.log(cityForecastData);
+        loadCityForecast(newCity);
 
-          // createCityButton(searchInput);
+        createCityButton(searchInput);
     } else {
-        // loadCityForecast(cityForecastData);
-        window.alert("this city already exists.");
+        loadCityForecast(newCity);
     };
 
 };
@@ -81,3 +83,41 @@ function setCityData(data, city){
 // function saveToStorage(newData) {
 
 // }
+function loadCityForecast(city) {
+    var newCity = city;
+    var currentStorage = JSON.parse(localStorage.getItem(newCity));
+
+    for (i = 0; i < 6; i++) {
+        var card = document.querySelector(`#card-${i}`);
+        card.querySelector('.card-header-title').textContent = `${currentStorage[0].name} (${currentStorage[0].weather[i].date})`;
+        card.querySelector('img').src = `./assets/images/icons/${currentStorage[0].weather[i].icon}.png`;
+
+        var temp = card.querySelector('ul :nth-child(1)')
+        temp.innerHTML = `Temp: ${currentStorage[0].weather[i].temp}`;
+
+        var wind = card.querySelector('ul :nth-child(2)')
+        wind.innerHTML = `Wind: ${currentStorage[0].weather[i].wind}MPH`;
+
+        var humidity = card.querySelector('ul :nth-child(3)')
+        humidity.innerHTML = `Humidity: ${currentStorage[0].weather[i].humidity}`;
+        card.hidden = false;
+    };
+
+    console.log(currentStorage);
+
+    // var cardId = `#card - ${ index } `
+    // var card = document.querySelector(cardId);
+    // console.log(card);
+    // card.hidden = false;
+};
+
+function createCityButton(name) {
+    var buttonList = document.querySelector("#button-column");
+    var newButton = document.createElement("button")
+    buttonList.appendChild(newButton);
+    newButton.classList.add('button', 'is-fullwidth', 'is-primary', 'is-light')
+    newButton.innerHTML = name;
+    addEventListener.newButton('click', loadCityForecast(name));
+};
+
+
