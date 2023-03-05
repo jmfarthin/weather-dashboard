@@ -7,6 +7,7 @@ async function getLatLon(event) {
     event.preventDefault();
 
     var searchInput = document.querySelector("#city-search").value.trim();
+    document.querySelector("#city-search").value = '';
 
     if (!searchInput) {
         console.error("you didn't enter a value");
@@ -23,8 +24,9 @@ async function getLatLon(event) {
     var lonData = data[0].lon;
     console.log(latData, lonData);
 
-    // createCityButton(searchInput);
     getWeatherData(latData, lonData, searchInput);
+
+    
 };
 
 searchForm.addEventListener('submit', getLatLon);
@@ -51,25 +53,31 @@ async function getWeatherData(lat, lon, city) {
 
 function setCityData(data, city){
     var newCity = city;
-    // var currentStorage = JSON.parse(localStorage.getItem(newCity));
-    newCityData = {
-        name: newCity,
-        weather: []
-    }
-    // console.log(newCityData);
-    
-    for (i=0; i < 6; i++) {
-        var dailyData = {
-            date: dayjs.unix(data.daily[i].dt).format("M-D-YYYY"),
-            temp: data.daily[i].temp.day,
-            
+    var currentStorage = JSON.parse(localStorage.getItem(newCity));
+    if (currentStorage === null) {
+        cityForecastData = {
+            name: newCity,
+            weather: []
+        }
+        for (i=0; i < 6; i++) {
+            var dailyData = {
+                date: dayjs.unix(data.daily[i].dt).format("M-D-YYYY"),
+                temp: data.daily[i].temp.day,
+
+            };
+            cityForecastData.weather.push(dailyData);
         };
-        newCityData.weather.push(dailyData);
+        localStorage.setItem(city, JSON.stringify([cityForecastData]));
+        console.log(cityForecastData);
+
+          // createCityButton(searchInput);
+    } else {
+        // loadCityForecast(cityForecastData);
+        window.alert("this city already exists.");
     };
-    
-    console.log(newCityData);
 
-    
+};
 
+// function saveToStorage(newData) {
 
-}
+// }
