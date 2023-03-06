@@ -20,7 +20,7 @@ async function getLatLon(event) {
     }
     console.log(searchInput);
 
-    var requestUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${searchInput},US&limit=1&appid=${apiKey}`;
+    var requestUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${searchInput},US&limit=1&appid=${apiKey}`;
     let repoData = await fetch(requestUrl);
     let data = await repoData.json();
 
