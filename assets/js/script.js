@@ -2,6 +2,8 @@
 var searchForm = document.querySelector('#search-form');
 var apiKey = "27d8cd69bb1174f9c5753f20a7b825cb"
 var newCityData = {};
+var buttonArr = [];
+var buttonList = document.querySelector("#button-column");
 
 async function getLatLon(event) {
     event.preventDefault();
@@ -71,13 +73,31 @@ function setCityData(data, city) {
         };
         localStorage.setItem(city, JSON.stringify([cityForecastData]));
         console.log(cityForecastData);
-        loadCityForecast(newCity);
 
-        createCityButton(searchInput);
+        //create new button for city
+        var newButton = document.createElement("button")
+        buttonList.appendChild(newButton);
+        newButton.classList.add('button', 'is-fullwidth', 'is-primary', 'is-light')
+        newButton.innerHTML = city
+        newButton.addEventListener('click', function () {
+            console.log(city);
+            loadCityForecast(city);
+        });
+
+        // store data for buttons
+        var cityStorage = JSON.parse(localStorage.getItem('city'));
+        if (cityStorage === null) {
+            buttonArr.push(newCity);
+            localStorage.setItem('city', JSON.stringify(buttonArr));
+        } else {
+            cityStorage.push(newCity);
+            localStorage.setItem('city', JSON.stringify(cityStorage));
+        }
+        //loads forecast to page
+        loadCityForecast(newCity);
     } else {
         loadCityForecast(newCity);
     };
-
 };
 
 // function saveToStorage(newData) {
@@ -93,13 +113,13 @@ function loadCityForecast(city) {
         card.querySelector('img').src = `./assets/images/icons/${currentStorage[0].weather[i].icon}.png`;
 
         var temp = card.querySelector('ul :nth-child(1)')
-        temp.innerHTML = `Temp: ${currentStorage[0].weather[i].temp}`;
+        temp.innerHTML = `Temp: ${currentStorage[0].weather[i].temp}&#8457`;
 
         var wind = card.querySelector('ul :nth-child(2)')
         wind.innerHTML = `Wind: ${currentStorage[0].weather[i].wind}MPH`;
 
         var humidity = card.querySelector('ul :nth-child(3)')
-        humidity.innerHTML = `Humidity: ${currentStorage[0].weather[i].humidity}`;
+        humidity.innerHTML = `Humidity: ${currentStorage[0].weather[i].humidity}%`;
         card.hidden = false;
     };
 
@@ -111,13 +131,42 @@ function loadCityForecast(city) {
     // card.hidden = false;
 };
 
-function createCityButton(name) {
-    var buttonList = document.querySelector("#button-column");
-    var newButton = document.createElement("button")
-    buttonList.appendChild(newButton);
-    newButton.classList.add('button', 'is-fullwidth', 'is-primary', 'is-light')
-    newButton.innerHTML = name;
-    addEventListener.newButton('click', loadCityForecast(name));
+function loadCityList() {
+    var loadList = localStorage.getItem('city');
+    if (loadList === null) {
+        return;
+    };
+    var cityList = JSON.parse(loadList);
+    console.log(cityList);
+
+    for (i = 0; i < cityList.length; i++) {
+        var newButton = document.createElement("button")
+        buttonList.appendChild(newButton);
+        newButton.classList.add('button', 'is-fullwidth', 'is-primary', 'is-light')
+        newButton.innerHTML = cityList[i]
+        var listCity = cityList[i];
+
+        // newButton.addEventListener("click", loadCityForecast(listCity), false);
+        console.log(listCity);
+        // newButton.addEventListener('click', function () {
+        //     console.log(listCity);
+        //     loadCityForecast(listCity);
+        // }, false);
+    }
+    // localStorage.setItem("city", newButton);
 };
+
+buttonList.addEventListener("click", function (event) {
+    var expCity = event.target.textContent;
+    console.log(expCity);
+    loadCityForecast(expCity);
+});
+
+loadCityList();
+
+
+
+
+
 
 
