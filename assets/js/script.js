@@ -4,6 +4,7 @@ var apiKey = "27d8cd69bb1174f9c5753f20a7b825cb"
 var newCityData = {};
 var buttonArr = [];
 var buttonList = document.querySelector("#button-column");
+var forecastTitle = document.querySelector("#forecast-title");
 
 
 // Uses user input to fetch lat and lon from open weather API and use it for function to get weather data.
@@ -100,6 +101,8 @@ function setCityData(data, city) {
 function loadCityForecast(city) {
     var newCity = city;
     var currentStorage = JSON.parse(localStorage.getItem(newCity));
+
+    forecastTitle.innerHTML = "5-Day Forecast:"
 
     for (i = 0; i < 6; i++) {
         var card = document.querySelector(`#card-${i}`);
