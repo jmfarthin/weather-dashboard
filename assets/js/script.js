@@ -1,10 +1,12 @@
-
+// global variables to be used in any function
 var searchForm = document.querySelector('#search-form');
 var apiKey = "27d8cd69bb1174f9c5753f20a7b825cb"
 var newCityData = {};
 var buttonArr = [];
 var buttonList = document.querySelector("#button-column");
 
+
+// Uses user input to fetch lat and lon from open weather API and use it for function to get weather data.
 async function getLatLon(event) {
     event.preventDefault();
 
@@ -20,39 +22,33 @@ async function getLatLon(event) {
     var requestUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${searchInput},US&limit=1&appid=${apiKey}`;
     let repoData = await fetch(requestUrl);
     let data = await repoData.json();
-    // console.log(data);
+
 
     var latData = data[0].lat;
     var lonData = data[0].lon;
     console.log(latData, lonData);
 
     getWeatherData(latData, lonData, searchInput);
-
-
 };
 
+// event listener for search submit
 searchForm.addEventListener('submit', getLatLon);
 
+// fetches weather data from Open Weather API using latitude and longitude and calls function to save forecast data
 async function getWeatherData(lat, lon, city) {
     var requestUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=imperial&exclude=current,minutely,hourly,alerts&appid=27d8cd69bb1174f9c5753f20a7b825cb`
     let apiData = await fetch(requestUrl);
     let weatherData = await apiData.json();
 
-    // var cityNameRequestUrl = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${apiKey}`;
-    // let apiCityData = await fetch(cityNameRequestUrl);
-    // let cityNameData = await apiCityData.json();
-
     var cityName = city
     console.log(weatherData);
     console.log(cityName);
 
-    // console.log(weatherData.current.weather[0].icon);
-    // var unixDate = weatherData.daily[1].dt;
-    // var date = dayjs.unix(unixDate).format("M-D-YYYY");
-
     setCityData(weatherData, cityName);
 };
 
+// Saves necessary city forecast data to an array, saves it to local storage using a unique key, 
+// creates a new button for the city, and calls function to load forecast to webpage.
 function setCityData(data, city) {
     var newCity = city;
     var currentStorage = JSON.parse(localStorage.getItem(newCity));
@@ -100,9 +96,7 @@ function setCityData(data, city) {
     };
 };
 
-// function saveToStorage(newData) {
-
-// }
+// function renders the forecast to premade cards that are revealed after data is inserted into the HTML
 function loadCityForecast(city) {
     var newCity = city;
     var currentStorage = JSON.parse(localStorage.getItem(newCity));
@@ -122,15 +116,10 @@ function loadCityForecast(city) {
         humidity.innerHTML = `Humidity: ${currentStorage[0].weather[i].humidity}%`;
         card.hidden = false;
     };
-
-    console.log(currentStorage);
-
-    // var cardId = `#card - ${ index } `
-    // var card = document.querySelector(cardId);
-    // console.log(card);
-    // card.hidden = false;
 };
 
+
+//function renders the city buttons to the webpage
 function loadCityList() {
     var loadList = localStorage.getItem('city');
     if (loadList === null) {
@@ -138,24 +127,18 @@ function loadCityList() {
     };
     var cityList = JSON.parse(loadList);
     console.log(cityList);
-
+    // creates each button
     for (i = 0; i < cityList.length; i++) {
         var newButton = document.createElement("button")
         buttonList.appendChild(newButton);
-        newButton.classList.add('button', 'is-fullwidth', 'is-primary', 'is-light')
+        newButton.classList.add('button', 'is-fullwidth', 'is-primary', 'my-2')
         newButton.innerHTML = cityList[i]
         var listCity = cityList[i];
-
-        // newButton.addEventListener("click", loadCityForecast(listCity), false);
         console.log(listCity);
-        // newButton.addEventListener('click', function () {
-        //     console.log(listCity);
-        //     loadCityForecast(listCity);
-        // }, false);
     }
-    // localStorage.setItem("city", newButton);
 };
 
+//adds event listener to the container of the buttons
 buttonList.addEventListener("click", function (event) {
     var expCity = event.target.textContent;
     console.log(expCity);
