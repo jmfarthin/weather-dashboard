@@ -22,19 +22,18 @@ To use the app, type in a city in the search bar and submit. The current forecat
 
 ### Screenshots of deployed website:
 
-![Code quiz website 1](./assets/images/codequiz1.png)
-![Code quiz website 2](./assets/images/codequiz2.png)
-![Code quiz website 3](./assets/images/codequiz3.png)
-![Code quiz website 4](./assets/images/codequiz4.png)
-![Code quiz website 5](./assets/images/codequiz5.png)
-![Code quiz website 6](./assets/images/codequiz6.png)
-![Code quiz website 7](./assets/images/codequiz7.png)
+![Weather App 1](./assets/images/screenshots/weather-app-1.png)
+![Weather App 2](./assets/images/screenshots/weather-app-2.png)
+![Weather App 3](./assets/images/screenshots/weather-app-3.png)
+![Weather App 4](./assets/images/screenshots/weather-app-4.png)
+![Weather App 5](./assets/images/screenshots/weather-app-5.png)
+
+# Credits
+
+yuvraaaj (github username)- icon file from OpenWeather Map API
+https://github.com/yuvraaaj/openweathermap-api-icons.git
 
 ## License
 
 Licensed under the general usage MIT license.
 Copyright (c) 2023 Justin Farthing
-
-# Credits
-
-yuvraaaj (github username)- icon file from OpenWeather Map API
